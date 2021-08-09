@@ -151,6 +151,7 @@ fi
 # started as a systemd service at this point
 
 setup_progress "Starting api.video loop!"
-python3 /root/bin/api-video/main.py /mutable/TeslaCam/
+API_VIDEO_LOGS=/root/bin/api-video/api-video.log
+PYTHON_PATH='/root/bin/api-video/src' API_VIDEO_API_KEY=$API_VIDEO_API_KEY python3 /root/bin/api-video/main.py /mutable/TeslaCam/ >> $API_VIDEO_LOGS
 
 exit 0
