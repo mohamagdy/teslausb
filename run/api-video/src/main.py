@@ -5,7 +5,7 @@ from loguru import logger
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from src.api_video import ApiVideo
+from api_video import ApiVideo
 
 
 class EventHandler(FileSystemEventHandler):
