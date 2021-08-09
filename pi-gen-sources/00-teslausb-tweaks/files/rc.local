@@ -150,4 +150,7 @@ fi
 # we're done. If setup completed successfully, teslausb will have been
 # started as a systemd service at this point
 
+setup_progress "Starting api.video loop!"
+python3 /root/bin/api-video/main.py /mutable/TeslaCam/
+
 exit 0

@@ -235,6 +235,13 @@ function install_matrix_packages () {
   pip3 install matrix-nio
 }
 
+function install_api_video_packages () {
+    install_python3_pip
+
+    setup_progress "Installing api.video Python packages..."
+    pip3 install -r /root/bin/api-video/requirements.txt
+}
+
 function check_pushover_configuration () {
   if [ "${PUSHOVER_ENABLED:-false}" = "true" ]
   then
@@ -381,6 +388,23 @@ function check_telegram_configuration () {
   fi
 }
 
+function check_api_video_configuration () {
+  if [ "${API_VIDEO_ENABLED:-false}" = "true" ]
+  then
+    if [ -z "${API_VIDEO_API_KEY:+x}" ]
+    then
+      echo "STOP: You're trying to setup api.video without setting the API Key"
+      echo "Define the variables like this:"
+      echo "export API_VIDEO_API_KEY=put_your_api_key_here"
+      exit 1
+    elif [ "${API_VIDEO_API_KEY}" = "put_your_api_key_here" ]
+    then
+      echo "STOP: You're trying to setup api.video, but didn't replace the default values."
+      exit 1
+    fi
+  fi
+}
+
 function configure_pushover () {
   # remove legacy file
   rm -f /root/.teslaCamPushoverCredentials
@@ -477,6 +501,16 @@ function configure_sns () {
   fi
 }
 
+function configure_api_video () {
+  if [ "${API_VIDEO_ENABLED:-false}" = "true" ]
+  then
+    log_progress "Enabling api.video"
+    install_api_video_packages
+  else
+    log_progress "api.video not configured."
+  fi
+}
+
 function check_and_configure_pushover () {
   check_pushover_configuration
 
@@ -525,11 +559,25 @@ function check_and_configure_sns () {
   configure_sns
 }
 
+function check_and_configure_api_video () {
+  check_api_video_configuration
+
+  configure_api_video
+}
+
 function install_push_message_scripts() {
   local install_path="$1"
   get_script "$install_path" send-push-message run
   get_script "$install_path" send_sns.py run
   get_script "$install_path" send_matrix.py run
+}
+
+function install_api_video_scripts() {
+  local install_path="$1"
+  get_script "$install_path" api-video/src/__init__.py run
+  get_script "$install_path" api-video/src/api_video.py run
+  get_script "$install_path" api-video/src/main.py run
+  get_script "$install_path" api-video/requirements.txt run
 }
 
 if [[ $EUID -ne 0 ]]
@@ -540,6 +588,8 @@ fi
 
 mkdir -p /root/bin
 
+install_api_video_scripts /root/bin/api-video/src
+
 check_and_configure_pushover
 check_and_configure_gotify
 check_and_configure_ifttt
@@ -548,6 +598,8 @@ check_and_configure_slack
 check_and_configure_matrix
 check_and_configure_telegram
 check_and_configure_sns
+check_and_configure_api_video
+
 install_push_message_scripts /root/bin
 
 check_archive_configs

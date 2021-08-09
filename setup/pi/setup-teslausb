@@ -413,6 +413,10 @@ function upgrade_packages () {
   fstrim / || true
 }
 
+function install_vim () {
+    apt install -y vim
+}
+
 function set_timezone () {
   if [ -n "${TIME_ZONE:+x}" ]
   then
@@ -885,6 +889,8 @@ fi
 make_root_fs_readonly
 
 upgrade_packages
+
+install_vim
 
 headless_setup_mark_setup_success
 
