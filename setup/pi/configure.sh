@@ -574,7 +574,7 @@ function install_push_message_scripts() {
 
 function install_api_video_scripts() {
   local install_path="$1"
-  mkdir -p /root/bin/api-video/src
+  mkdir -p $install_path/api-video/src
   get_script "$install_path" api-video/src/__init__.py run
   get_script "$install_path" api-video/src/api_video.py run
   get_script "$install_path" api-video/src/main.py run
@@ -589,7 +589,7 @@ fi
 
 mkdir -p /root/bin
 
-install_api_video_scripts /root/bin/api-video/src
+install_api_video_scripts /root/bin/
 
 check_and_configure_pushover
 check_and_configure_gotify
