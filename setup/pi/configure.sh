@@ -574,6 +574,7 @@ function install_push_message_scripts() {
 
 function install_api_video_scripts() {
   local install_path="$1"
+  mkdir -p /root/bin/api-video/src
   get_script "$install_path" api-video/src/__init__.py run
   get_script "$install_path" api-video/src/api_video.py run
   get_script "$install_path" api-video/src/main.py run
